@@ -10,11 +10,21 @@ firebase_admin.initialize_app(cred, {
 ref = db.reference("Users")
 
 data = {
+    "123456":
+        {
+            "name": "Margaret Maina",
+            "major": "IT",
+            "starting_year": 2020,
+            "total_attendance": 6,
+            "standing": "Good",
+            "year": 4,
+            "last_attendance_time": "2022-12-11 10:54:34"
+        },
     "312654":
         {
             "name": "Mutazar Hassan",
             "major": "Robotics",
-            "starting_year": 2017,
+            "starting_year": 2020,
             "total_attendance": 6,
             "standing": "Good",
             "year": 4,
@@ -24,7 +34,7 @@ data = {
             {
                 "name": "Emily Blunt",
                 "major": "Robotics",
-                "starting_year": 2017,
+                "starting_year": 2020,
                 "total_attendance": 6,
                 "standing": "Good",
                 "year": 4,
@@ -34,7 +44,7 @@ data = {
             {
                 "name": "Elon Musk",
                 "major": "Robotics",
-                "starting_year": 2017,
+                "starting_year": 2020,
                 "total_attendance": 6,
                 "standing": "Good",
                 "year": 4,
