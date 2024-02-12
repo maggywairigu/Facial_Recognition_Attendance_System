@@ -9,7 +9,7 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 from firebase_admin import storage
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, request, jsonify
 
 cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred, {
@@ -50,11 +50,12 @@ print("Encode File Loaded")
 modeType = 0
 counter = 0
 imgStudent = []
+recognized_students = []
 
 # Function to capture video from webcam
 # Function to capture video from webcam
 def gen_frames(imageBackground):
-    global modeType, counter, imgBackground  # Declare modeType and counter as global variables
+    global modeType, counter, imgBackground, recognized_students  # Declare modeType and counter as global variables
 
     while True:
         success, img = cap.read()
@@ -97,6 +98,7 @@ def gen_frames(imageBackground):
                             counter = 1
                             modeType = 1
 
+
                 if counter != 0:
                     if counter == 1:
                         """Get the data"""
@@ -110,9 +112,18 @@ def gen_frames(imageBackground):
 
                         """Update data of the attendance"""
                         datetimeObject = datetime.strptime(studentInfo['last_attendance_time'], "%Y-%m-%d %H:%M:%S")
-
                         secondsElapsed = (datetime.now() - datetimeObject).total_seconds()
                         print(secondsElapsed)
+
+                        # Store recognized student information
+                        recognized_students.append(
+                            {
+                                'image': imgStudent,
+                                'id': id,
+                                'info': studentInfo,
+                            }
+                        )
+                        print(recognized_students)
 
                         if secondsElapsed > 30:
                             ref = db.reference(f'Users/{id}')
@@ -175,6 +186,13 @@ def index():
 @app.route('/video_feed')
 def video_feed():
     return Response(gen_frames(imgBackground), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route('/update_attendance', methods=['GET', 'POST'])
+def update_attendance():
+    global recognized_students
+    return render_template('update_attendance.html', recognized_students=recognized_students)
+
 
 
 if __name__ == '__main__':
